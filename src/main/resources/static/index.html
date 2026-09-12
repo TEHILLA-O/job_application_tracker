@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Pipeline · Job Application Tracker</title>
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='8' fill='%23141a16'/%3E%3Cpath d='M8 21V11h4l4 6 4-6h4v10h-3v-6l-5 7-5-7v6H8z' fill='%23d7a25a'/%3E%3C/svg%3E">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/styles.css">
+</head>
+<body>
+    <div class="app">
+        <header class="topbar">
+            <div class="brand">
+                <span class="mark">P</span>
+                <div>
+                    <p class="eyebrow">Tehilla's workspace</p>
+                    <h1>Pipeline</h1>
+                </div>
+            </div>
+            <nav class="views" aria-label="Workspace views">
+                <button class="view-btn is-active" data-view="board">Board</button>
+                <button class="view-btn" data-view="table">Table</button>
+                <button class="view-btn" data-view="insights">Insights</button>
+            </nav>
+            <div class="top-actions">
+                <a class="ghost" href="/swagger-ui.html" target="_blank" rel="noreferrer">API docs</a>
+                <a class="ghost" href="/api/applications/export.csv">Export CSV</a>
+                <button class="primary" id="new-btn">New application</button>
+            </div>
+        </header>
+
+        <section class="stats" id="stats" aria-live="polite"></section>
+
+        <section class="toolbar">
+            <input id="search" type="search" placeholder="Search company, role, notes…" autocomplete="off">
+            <select id="filter-status">
+                <option value="">All stages</option>
+            </select>
+            <select id="filter-source">
+                <option value="">All sources</option>
+            </select>
+            <select id="filter-priority">
+                <option value="">All priorities</option>
+            </select>
+            <label class="check">
+                <input type="checkbox" id="filter-followup">
+                Follow-ups due
+            </label>
+        </section>
+
+        <main id="workspace" class="workspace"></main>
+
+        <footer class="about">
+            <h2>About</h2>
+            <p>I built Pipeline while I was applying for roles and losing track of what I had sent, who I was waiting on, and what came next. Java 21, Spring Boot, JPA and H2 run the API. The board you are looking at is just HTML, CSS and JavaScript, so I can keep editing it. Maven and GitHub Actions keep the tests honest.</p>
+        </footer>
+    </div>
+
+    <aside class="drawer" id="drawer" hidden>
+        <div class="drawer-panel" role="dialog" aria-labelledby="drawer-title">
+            <header>
+                <div>
+                    <p class="eyebrow" id="drawer-kicker">Application</p>
+                    <h2 id="drawer-title">New application</h2>
+                </div>
+                <button class="icon-btn" id="close-drawer" aria-label="Close">×</button>
+            </header>
+            <form id="app-form" class="form-grid">
+                <label>Company<input name="company" required maxlength="120"></label>
+                <label>Role<input name="role" required maxlength="160"></label>
+                <label>Status<select name="status" required></select></label>
+                <label>Applied<input name="appliedDate" type="date" required></label>
+                <label>Location<input name="location" maxlength="160"></label>
+                <label>Source<select name="source"></select></label>
+                <label>Priority<select name="priority"></select></label>
+                <label>Follow-up<input name="nextFollowUp" type="date"></label>
+                <label>Salary min<input name="salaryMin" type="number" min="0" step="500"></label>
+                <label>Salary max<input name="salaryMax" type="number" min="0" step="500"></label>
+                <label class="wide">Job URL<input name="jobUrl" type="url" maxlength="500" placeholder="https://"></label>
+                <label>Recruiter<input name="recruiterName" maxlength="120"></label>
+                <label>Recruiter email<input name="recruiterEmail" type="email" maxlength="160"></label>
+                <label class="wide">Tags<input name="tags" placeholder="java, spring, sql"></label>
+                <label class="wide">Notes<textarea name="notes" maxlength="3000" rows="3"></textarea></label>
+                <div class="form-actions wide">
+                    <button type="submit" class="primary">Save changes</button>
+                    <button type="button" class="danger" id="delete-btn" hidden>Delete</button>
+                </div>
+            </form>
+            <section class="timeline" id="timeline-wrap" hidden>
+                <div class="timeline-head">
+                    <h3>Timeline</h3>
+                    <p>Status moves and notes stay attached to this record.</p>
+                </div>
+                <form id="note-form" class="note-form">
+                    <textarea name="message" required maxlength="3000" placeholder="Add a note, interview recap or next step…"></textarea>
+                    <button type="submit" class="primary">Add note</button>
+                </form>
+                <ol id="timeline"></ol>
+            </section>
+        </div>
+    </aside>
+
+    <div id="toasts" class="toasts" aria-live="polite"></div>
+    <script src="/app.js"></script>
+</body>
+</html>
